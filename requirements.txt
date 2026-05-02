@@ -1,20 +1,8 @@
-# Core
-anthropic
 arxiv
 pypdf
-
-# Embeddings & Vector Store
-chromadb
-ollama
-
-# Chunking
 llama-index
-
-# UI
+llama-index-embeddings-ollama
+chromadb
+anthropic
 streamlit
-
-# Utilities
-python-dotenv
-
-# Testing
 pytest
