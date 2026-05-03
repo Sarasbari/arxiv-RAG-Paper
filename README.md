@@ -1,29 +1,29 @@
 # arXiv RAG Paper
 
-A Retrieval-Augmented Generation (RAG) pipeline for querying arXiv research papers using Claude, ChromaDB, and Ollama embeddings.
+A Retrieval-Augmented Generation (RAG) pipeline for querying arXiv research papers using Gemini, ChromaDB, and sentence-transformers.
 
 ## Architecture
 
 ```
 arxiv API → PDF download → text extraction → semantic chunking → embedding → ChromaDB
                                                                                  ↓
-                                              Claude API ← reranked chunks ← vector search ← user query
+                                              Gemini API ← reranked chunks ← vector search ← user query
 ```
 
 ## Quick Start
 
 ```bash
 # Install dependencies
-make install
+pip install -r requirements.txt
 
-# Set your API key
-echo "ANTHROPIC_API_KEY=sk-..." > .env
+# Set your API key (free from https://aistudio.google.com/apikey)
+echo "GEMINI_API_KEY=your_key_here" > .env
 
 # Ingest papers
-make ingest
+python -m pipeline.ingest_pipeline
 
 # Launch the UI
-make run
+streamlit run app/main.py
 ```
 
 ## Project Structure
@@ -37,16 +37,16 @@ make run
 ## Testing
 
 ```bash
-make test
+pytest tests/ -v
 ```
 
 ## Tech Stack
 
-| Component   | Tool                  |
-|-------------|-----------------------|
-| LLM         | Claude (Anthropic)    |
-| Embeddings  | nomic-embed (Ollama)  |
-| Vector DB   | ChromaDB              |
-| Chunking    | LlamaIndex            |
-| PDF Parsing | pypdf                 |
-| UI          | Streamlit             |
+| Component   | Tool                          |
+|-------------|-------------------------------|
+| LLM         | Gemini Flash (Google, free)   |
+| Embeddings  | all-MiniLM-L6-v2 (local)     |
+| Vector DB   | ChromaDB                      |
+| Chunking    | LlamaIndex                    |
+| PDF Parsing | pypdf                         |
+| UI          | Streamlit                     |

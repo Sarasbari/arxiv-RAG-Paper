@@ -1,8 +1,8 @@
 arxiv
 pypdf
-llama-index
-llama-index-embeddings-ollama
+llama-index-core
+sentence-transformers
 chromadb
-anthropic
+google-genai
 streamlit
 pytest

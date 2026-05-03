@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 import streamlit as st
 from pipeline.synthesizer import answer
 from core.vectorstore import get_stats

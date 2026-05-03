@@ -1,23 +1,25 @@
-from llama_index.embeddings.ollama import OllamaEmbedding
+from sentence_transformers import SentenceTransformer
 from config.settings import EMBED_MODEL
 
 # singleton — created once, reused everywhere
 _embed_model = None
 
 
-def get_embed_model() -> OllamaEmbedding:
+def get_embed_model() -> SentenceTransformer:
     """Return (or create) the shared embedding model instance."""
     global _embed_model
     if _embed_model is None:
-        _embed_model = OllamaEmbedding(model_name=EMBED_MODEL)
+        _embed_model = SentenceTransformer(EMBED_MODEL)
     return _embed_model
 
 
 def embed_text(text: str) -> list[float]:
     """Embed a single string. Returns vector."""
-    return get_embed_model().get_text_embedding(text)
+    model = get_embed_model()
+    return model.encode(text).tolist()
 
 
 def embed_batch(texts: list[str]) -> list[list[float]]:
     """Embed a list of strings. Returns list of vectors."""
-    return get_embed_model().get_text_embedding_batch(texts)
+    model = get_embed_model()
+    return model.encode(texts).tolist()

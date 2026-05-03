@@ -1,5 +1,5 @@
-import anthropic
-from config.settings import CLAUDE_MODEL, MAX_TOKENS
+from google import genai
+from config.settings import GEMINI_MODEL, MAX_TOKENS
 from config.prompts import SYSTEM_PROMPT, CONTEXT_TEMPLATE, CHUNK_TEMPLATE
 from pipeline.query_pipeline import retrieve
 
@@ -24,7 +24,7 @@ def answer(query: str) -> tuple[str, list[dict]]:
     Full Q&A pipeline:
     1. Retrieve relevant chunks
     2. Format context
-    3. Call Claude API
+    3. Call Gemini API
     Returns (answer_text, source_chunks)
     """
     chunks = retrieve(query)
@@ -35,12 +35,14 @@ def answer(query: str) -> tuple[str, list[dict]]:
     context = format_chunks(chunks)
     prompt = CONTEXT_TEMPLATE.format(chunks=context, query=query)
 
-    client = anthropic.Anthropic()
-    response = client.messages.create(
-        model=CLAUDE_MODEL,
-        max_tokens=MAX_TOKENS,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
+    client = genai.Client()
+    response = client.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=prompt,
+        config={
+            "system_instruction": SYSTEM_PROMPT,
+            "max_output_tokens": MAX_TOKENS,
+        },
     )
 
-    return response.content[0].text, chunks
+    return response.text, chunks

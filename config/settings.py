@@ -1,4 +1,7 @@
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ── Paths ────────────────────────────────────────────────
 BASE_DIR     = Path(__file__).parent.parent
@@ -11,9 +14,9 @@ CHROMA_DIR.mkdir(exist_ok=True)
 # ── ChromaDB ─────────────────────────────────────────────
 COLLECTION_NAME = "research_papers"
 
-# ── Embedding (Ollama local — free) ──────────────────────
-EMBED_MODEL     = "nomic-embed-text"
-EMBED_DIM       = 768
+# ── Embedding (sentence-transformers — free, local) ──────
+EMBED_MODEL     = "all-MiniLM-L6-v2"
+EMBED_DIM       = 384
 
 # ── Retrieval ────────────────────────────────────────────
 TOP_K           = 12      # chunks retrieved per query
@@ -24,8 +27,8 @@ DEFAULT_FETCH_COUNT          = 20    # papers per arxiv query
 CHUNK_BREAKPOINT_PERCENTILE  = 92    # higher = bigger chunks
 CHUNK_BUFFER_SIZE            = 1
 
-# ── Claude API ───────────────────────────────────────────
-CLAUDE_MODEL    = "claude-opus-4-5"
+# ── Gemini API (free tier) ───────────────────────────────
+GEMINI_MODEL    = "gemini-1.5-flash"
 MAX_TOKENS      = 1500
 
 # ── Default arxiv topics to seed the knowledge base ──────
