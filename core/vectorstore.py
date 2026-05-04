@@ -47,7 +47,15 @@ def add_chunks(chunks: list[dict], embeddings: list[list[float]]) -> int:
         })
 
     if ids:
-        col.add(ids=ids, documents=docs, metadatas=metas, embeddings=embeddings)
+        # Loophole fix: Batch insert to prevent ChromaDB from throwing payload size limits on huge papers
+        batch_size = 500
+        for i in range(0, len(ids), batch_size):
+            col.add(
+                ids=ids[i:i+batch_size], 
+                documents=docs[i:i+batch_size], 
+                metadatas=metas[i:i+batch_size], 
+                embeddings=embeddings[i:i+batch_size]
+            )
 
     return len(ids)
 

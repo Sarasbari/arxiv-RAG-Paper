@@ -35,14 +35,17 @@ def answer(query: str) -> tuple[str, list[dict]]:
     context = format_chunks(chunks)
     prompt = CONTEXT_TEMPLATE.format(chunks=context, query=query)
 
-    client = genai.Client()
-    response = client.models.generate_content(
-        model=GEMINI_MODEL,
-        contents=prompt,
-        config={
-            "system_instruction": SYSTEM_PROMPT,
-            "max_output_tokens": MAX_TOKENS,
-        },
-    )
-
-    return response.text, chunks
+    try:
+        client = genai.Client()
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+            config={
+                "system_instruction": SYSTEM_PROMPT,
+                "max_output_tokens": MAX_TOKENS,
+            },
+        )
+        return response.text, chunks
+    except Exception as e:
+        # Loophole fix: Prevent unhandled API errors (like quota exceeded) from crashing the app
+        return f"⚠️ **Failed to generate answer.** Please check your API key and quota. Error details: `{str(e)}`", chunks

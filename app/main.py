@@ -27,8 +27,11 @@ with st.sidebar:
         if st.button("Ingest", use_container_width=True):
             topics = [custom_topic] if custom_topic else DEFAULT_TOPICS
             with st.spinner("Fetching and indexing..."):
-                run_ingestion(topics=topics, max_per_topic=10)
-            st.success("Done! Refresh stats.")
+                try:
+                    run_ingestion(topics=topics, max_per_topic=10)
+                    st.success("Done! Refresh stats.")
+                except Exception as e:
+                    st.error(f"Ingestion failed: {str(e)}")
 
     st.divider()
     st.markdown("**Try these:**")
@@ -52,16 +55,19 @@ query = st.text_input(
 
 if query:
     with st.spinner("Retrieving and synthesizing..."):
-        ans, sources = answer(query)
+        try:
+            ans, sources = answer(query)
+            
+            st.markdown("### Answer")
+            st.markdown(ans)
 
-    st.markdown("### Answer")
-    st.markdown(ans)
-
-    if sources:
-        with st.expander(f"View {len(sources)} source chunks"):
-            for i, s in enumerate(sources):
-                m = s["metadata"]
-                st.markdown(f"**[{i+1}] {m['title']}** ({m['year']})  `score: {s['score']}`")
-                st.caption(m["authors"])
-                st.text(s["text"][:400] + ("..." if len(s["text"]) > 400 else ""))
-                st.divider()
+            if sources:
+                with st.expander(f"View {len(sources)} source chunks"):
+                    for i, s in enumerate(sources):
+                        m = s["metadata"]
+                        st.markdown(f"**[{i+1}] {m['title']}** ({m['year']})  `score: {s['score']}`")
+                        st.caption(m["authors"])
+                        st.text(s["text"][:400] + ("..." if len(s["text"]) > 400 else ""))
+                        st.divider()
+        except Exception as e:
+            st.error(f"An unexpected error occurred during processing: {str(e)}")

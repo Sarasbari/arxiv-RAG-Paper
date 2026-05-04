@@ -22,4 +22,5 @@ def embed_text(text: str) -> list[float]:
 def embed_batch(texts: list[str]) -> list[list[float]]:
     """Embed a list of strings. Returns list of vectors."""
     model = get_embed_model()
-    return model.encode(texts).tolist()
+    # Performance fix: explicit batch_size prevents memory spikes on large documents
+    return model.encode(texts, batch_size=32, show_progress_bar=False).tolist()
